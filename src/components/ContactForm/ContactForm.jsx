@@ -40,7 +40,7 @@ export const ContactForm = () => {
 
   const onSubmitHandler = async event => {
     event.preventDefault();
-    const contactData = { name: name.trimEnd(), phone: number.trimEnd() };
+    const contactData = { name: name.trimEnd(), number: number.trimEnd() };
 
     if (isInContacts(contactData.name)) {
       return alert(`${contactData.name} is in contacts!`);

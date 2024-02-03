@@ -6,4 +6,8 @@ export const theme = {
     medium: '0 9px 47px 11px rgba(51, 51, 51, 0.18);',
   },
   transition: '250ms ease-in-out',
+  colors: {
+    text: 'black',
+    accent: 'red',
+  },
 };
