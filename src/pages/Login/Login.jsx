@@ -54,7 +54,7 @@ const Login = () => {
             name="password"
             rules={[
               { required: true, message: 'Please input your password!' },
-              { min: 4, message: 'Min lenght=4' },
+              { min: 6, message: 'Min lenght=6' },
             ]}
           >
             <Input.Password prefix={<LockOutlined />} placeholder="*******" />
