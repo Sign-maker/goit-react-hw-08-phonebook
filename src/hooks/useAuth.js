@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import * as operations from 'redux-store/auth/authOperations';
 import {
+  selectIsAuthLoading,
   selectIsLoggedIn,
   selectIsRefreshing,
   selectUser,
@@ -12,6 +13,7 @@ export const useAuth = () => {
   const user = useSelector(selectUser);
   const isLoggedIn = useSelector(selectIsLoggedIn);
   const isRefreshing = useSelector(selectIsRefreshing);
+  const isAuthLoading = useSelector(selectIsAuthLoading);
 
   const register = formData => dispatch(operations.register(formData)).unwrap();
   const logIn = formData => dispatch(operations.logIn(formData)).unwrap();
@@ -24,6 +26,7 @@ export const useAuth = () => {
     user,
     isLoggedIn,
     isRefreshing,
+    isAuthLoading,
     register,
     logIn,
     logOut,

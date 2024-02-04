@@ -1,5 +1,12 @@
 @import-normalize; /* bring in normalize.css styles */
-@import 'react-toastify/dist/ReactToastify.css';
+@import './reset.css';
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-left: 15px;
+  padding-right: 15px;
+}
 
 /* body {
   margin: 0;

@@ -1,11 +1,12 @@
-import { Route, Routes } from 'react-router-dom';
-import { Layout } from './Layout/Layout';
-
+import { Navigate, Route, Routes } from 'react-router-dom';
 import { lazy, useEffect } from 'react';
+
+import { useAuth } from 'hooks/useAuth';
 import { RestrictedRoute } from './RestricredRoute';
 import { PrivateRoute } from './PrivateRoute';
-import { useAuth } from 'hooks/useAuth';
-import { toast } from 'react-toastify';
+import { message } from 'antd';
+import { Layout } from './Layout/Layout';
+import { routes } from 'constants/routes';
 
 const Home = lazy(() => import('pages/Home/Home'));
 const Contacts = lazy(() => import('pages/Contacts/Contacts'));
@@ -16,65 +17,43 @@ export const App = () => {
   const { refreshUser, isRefreshing } = useAuth();
 
   useEffect(() => {
-    async function refresh() {
-      try {
-        await refreshUser();
-        // toast(`User succesfully refreshed`);
-      } catch (error) {
-        toast.error(`Please login or register`);
-      }
-    }
-    refresh();
+    refreshUser().catch(() => {
+      message.error(`Please login or register`);
+    });
   }, [refreshUser]);
 
   return isRefreshing ? (
     <p>Refreshing user data</p>
   ) : (
     <Routes>
-      <Route path="/" element={<Layout />}>
+      <Route path={routes.HOME} element={<Layout />}>
         <Route index element={<Home />} />
         <Route
-          path="/contacts"
+          path={routes.CONTACTS}
           element={
-            <PrivateRoute redirectTo="/login" component={<Contacts />} />
+            <PrivateRoute redirectTo={routes.LOGIN} component={<Contacts />} />
           }
         />
         <Route
-          path="register"
+          path={routes.REGISTER}
           element={
-            <RestrictedRoute redirectTo="/contacts" component={<Register />} />
+            <RestrictedRoute
+              redirectTo={routes.CONTACTS}
+              component={<Register />}
+            />
           }
         />
         <Route
-          path="login"
+          path={routes.LOGIN}
           element={
-            <RestrictedRoute redirectTo="/contacts" component={<Login />} />
+            <RestrictedRoute
+              redirectTo={routes.CONTACTS}
+              component={<Login />}
+            />
           }
         />
       </Route>
-      <Route path="*" element={<div>Page not found</div>} />
+      <Route path="*" element={<Navigate to={routes.HOME} />} />
     </Routes>
   );
-
-  // <Container>
-  //   <Title>Phonebook</Title>
-  //   <ContactForm />
-  //   <Subtitle>Contacts</Subtitle>
-  //   <Filter />
-  //   <ContactList />
-  //   <ToastContainer />
-  // </Container>
 };
-
-// export const App = () => {
-//   return (
-//     <Container>
-//       <Title>Phonebook</Title>
-//       <ContactForm />
-//       <Subtitle>Contacts</Subtitle>
-//       <Filter />
-//       <ContactList />
-//       <ToastContainer />
-//     </Container>
-//   );
-// };

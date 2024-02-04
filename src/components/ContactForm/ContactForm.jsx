@@ -1,34 +1,21 @@
-import { useState, useId } from 'react';
+import { useState } from 'react';
 import { useContacts } from 'hooks/useContacts';
 import { useFilter } from 'hooks/useFilter';
-import { Button, Form, Input, Label } from './ContactForm.styled';
-import { toast } from 'react-toastify';
+
+import { Button, Form, Input, message } from 'antd';
+import {
+  UserOutlined,
+  PhoneOutlined,
+  UserAddOutlined,
+} from '@ant-design/icons';
+import css from './ContactForm.module.css';
 
 export const ContactForm = () => {
-  const [name, setName] = useState('');
-  const [number, setNumber] = useState('');
   const [adding, setAdding] = useState(false);
+  const [antForm] = Form.useForm();
 
   const { contacts, addContact } = useContacts();
   const { setFilter } = useFilter();
-
-  const nameInputId = useId();
-  const telInputId = useId();
-
-  const inputHandler = event => {
-    const { name, value } = event.target;
-
-    switch (name) {
-      case 'name':
-        setName(value.trimStart());
-        break;
-      case 'number':
-        setNumber(value.trimStart());
-        break;
-      default:
-        return;
-    }
-  };
 
   const isInContacts = newName => {
     const newNameToLowerCase = newName.toLowerCase();
@@ -38,54 +25,67 @@ export const ContactForm = () => {
     );
   };
 
-  const onSubmitHandler = async event => {
-    event.preventDefault();
+  const onSubmitHandler = async ({ name, number }) => {
     const contactData = { name: name.trimEnd(), number: number.trimEnd() };
 
     if (isInContacts(contactData.name)) {
-      return alert(`${contactData.name} is in contacts!`);
+      return message.error(`${contactData.name} is in contacts!`);
     }
 
     try {
       setAdding(true);
       await addContact(contactData);
-      toast(`Contact ${name} added`);
+      message.success(`Contact ${name} added`);
+      antForm.resetFields();
+      setFilter('');
     } catch (error) {
-      toast.error(`Unable to add contact! ${error}`);
+      message.error(`Unable to add contact! ${error}`);
     } finally {
       setAdding(false);
     }
-
-    setFilter('');
-    setName('');
-    setNumber('');
   };
 
   return (
-    <Form onSubmit={onSubmitHandler}>
-      <Label htmlFor={nameInputId}>Name</Label>
-      <Input
-        id={nameInputId}
-        placeholder="Vasyl Pupkin"
-        type="text"
+    <Form
+      form={antForm}
+      name="Contact"
+      autoComplete="off"
+      onFinish={onSubmitHandler}
+      layout="vertical"
+      className={css.form}
+    >
+      <Form.Item
+        label="Name"
         name="name"
-        value={name}
-        onChange={inputHandler}
-        required
-      />
-      <Label htmlFor={telInputId}>Number</Label>
-      <Input
-        id={telInputId}
-        placeholder="999111999"
-        type="tel"
+        rules={[
+          { required: true, message: 'Please input contact name!' },
+          { min: 3, message: 'Min lenght=3' },
+        ]}
+      >
+        <Input prefix={<UserOutlined />} placeholder="user@mail.com" />
+      </Form.Item>
+      <Form.Item
+        label="Number"
         name="number"
-        value={number}
-        onChange={inputHandler}
-        required
-      />
-      <Button type="submit" disabled={!(name && number) || adding}>
-        {adding ? 'Adding...' : 'Add contact'}
-      </Button>
+        rules={[{ required: true, message: 'Please input phone number!' }]}
+      >
+        <Input
+          type="tel"
+          prefix={<PhoneOutlined />}
+          placeholder="38999999999"
+        />
+      </Form.Item>
+      <Form.Item>
+        <Button
+          type="primary"
+          icon={<UserAddOutlined />}
+          loading={adding}
+          htmlType="submit"
+          block
+        >
+          AddContact
+        </Button>
+      </Form.Item>
     </Form>
   );
 };

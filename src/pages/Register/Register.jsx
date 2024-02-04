@@ -1,64 +1,97 @@
 import { useAuth } from 'hooks/useAuth';
-import { toast } from 'react-toastify';
+
+import { Button, Form, Input, message } from 'antd';
+import Title from 'antd/es/typography/Title';
+import {
+  UserOutlined,
+  LockOutlined,
+  MailOutlined,
+  FormOutlined,
+} from '@ant-design/icons';
+import css from './Register.module.css';
 
 const Register = () => {
-  const { register } = useAuth();
+  const { register, isAuthLoading } = useAuth();
+  const [antForm] = Form.useForm();
 
-  const handleSubmit = async event => {
-    event.preventDefault();
-    const form = event.currentTarget;
-    const formData = {
-      name: form.elements.name.value,
-      email: form.elements.email.value,
-      password: form.elements.password.value,
-    };
+  const onFinish = async formData => {
     try {
       await register(formData);
-      form.reset();
-      toast(`Registration was succesfull`);
+      antForm.resetFields();
+      message.success(`Registration was succesfull`);
     } catch (error) {
-      toast.error(
+      message.error(
         `Unable to register, user is already registered or server error`
       );
     }
   };
 
   return (
-    <>
-      <form onSubmit={handleSubmit} autoComplete="off">
-        <label>
-          User name:
-          <input
-            type="text"
+    <section className={css.section}>
+      <div className="container">
+        <Title className={css.title}>User registration</Title>
+        <Form
+          form={antForm}
+          name="Register"
+          autoComplete="off"
+          onFinish={onFinish}
+          layout="vertical"
+          className={css.form}
+        >
+          <Form.Item
+            label="Name"
             name="name"
-            minLength={3}
-            placeholder="User name"
-            required
-          />
-        </label>
-        User email:
-        <label>
-          <input
-            type="email"
+            rules={[
+              { required: true, message: 'Please input your name!' },
+              {
+                min: 3,
+                message: 'Min langth=3',
+              },
+            ]}
+          >
+            <Input prefix={<UserOutlined />} placeholder="Vasyl Smith" />
+          </Form.Item>
+          <Form.Item
+            label="Email"
             name="email"
-            placeholder="user@mail.com"
-            required
-          />
-        </label>
-        <label>
-          User password:
-          <input
-            type="password"
+            rules={[
+              { required: true, message: 'Please input your email!' },
+              {
+                type: 'email',
+                message: 'The input is not valid E-mail! user@mail.com',
+              },
+            ]}
+          >
+            <Input
+              prefix={<MailOutlined />}
+              type="email"
+              placeholder="user@mail.com"
+            />
+          </Form.Item>
+          <Form.Item
+            label="Password"
             name="password"
-            minLength={7}
-            placeholder="*******"
-            autoComplete="off"
-            required
-          />
-        </label>
-        <button type="submit">Register</button>
-      </form>
-    </>
+            rules={[
+              { required: true, message: 'Please input your password!' },
+              { min: 4, message: 'Min lenght=4' },
+            ]}
+          >
+            <Input.Password prefix={<LockOutlined />} placeholder="*******" />
+          </Form.Item>
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              icon={<FormOutlined />}
+              loading={isAuthLoading}
+              block
+            >
+              Register
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
+    </section>
   );
 };
 

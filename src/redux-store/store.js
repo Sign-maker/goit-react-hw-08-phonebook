@@ -4,7 +4,6 @@ import { contactsSlice } from './contacts/contactsSlice';
 import { authSlice } from './auth/authSlice';
 
 import {
-  persistStore,
   persistReducer,
   FLUSH,
   REHYDRATE,

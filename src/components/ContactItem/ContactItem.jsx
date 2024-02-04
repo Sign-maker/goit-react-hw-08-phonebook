@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Button, ContactInfo, Item } from './ContactItem.styled';
 import { useContacts } from 'hooks/useContacts';
-import { toast } from 'react-toastify';
+
+import { Button, Card, List, Popconfirm, message } from 'antd';
+import { DeleteOutlined } from '@ant-design/icons';
 
 export const ContactItem = ({ id, name, number }) => {
   const { deleteContact } = useContacts();
@@ -11,24 +12,36 @@ export const ContactItem = ({ id, name, number }) => {
     try {
       setDeleting(true);
       await deleteContact(id);
-      toast(`Contact ${name} deleted`);
+      message.success(`Contact ${name} deleted`);
     } catch (error) {
-      console.log(error);
-      toast.error(`Unable to delete! ${error}`);
+      message.error(`Unable to delete! ${error}`);
     } finally {
       setDeleting(false);
     }
   };
 
   return (
-    <Item>
-      <ContactInfo>
-        <span>{name}</span>
-        <span>{number}</span>
-      </ContactInfo>
-      <Button type="button" disabled={deleting} onClick={handleClick}>
-        {deleting ? 'Deleting...' : 'Delete'}
-      </Button>
-    </Item>
+    <List.Item>
+      <Card
+        actions={[
+          <Popconfirm
+            title="Delete the contact"
+            description="Are you sure to delete this contact?"
+            onConfirm={handleClick}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button
+              type="primary"
+              htmlType="submit"
+              icon={<DeleteOutlined />}
+              loading={deleting}
+            ></Button>
+          </Popconfirm>,
+        ]}
+      >
+        <Card.Meta title={name} description={number}></Card.Meta>
+      </Card>
+    </List.Item>
   );
 };

@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { useContacts } from 'hooks/useContacts';
+
 import { ContactItem } from 'components/ContactItem/ContactItem';
-import { List } from './ContactList.styled';
-import { Info } from 'components/Info/Info.styled';
+import { Empty, List, Spin } from 'antd';
 
 export const ContactList = () => {
   const { fetchContacts, filteredContacts, isLoading } = useContacts();
@@ -13,17 +13,29 @@ export const ContactList = () => {
 
   return (
     <>
-      {isLoading && <Info>Loading...</Info>}
+      {isLoading && (
+        <Spin tip="Loading" size="large">
+          <div></div>
+        </Spin>
+      )}
       {filteredContacts.length > 0 && (
-        <List>
-          {filteredContacts.map(({ id, name, number }) => (
+        <List
+          grid={{
+            gutter: 16,
+            xs: 1,
+            sm: 2,
+            md: 3,
+            lg: 4,
+            xl: 4,
+            xxl: 3,
+          }}
+          dataSource={filteredContacts}
+          renderItem={({ id, name, number }) => (
             <ContactItem key={id} id={id} name={name} number={number} />
-          ))}
-        </List>
+          )}
+        ></List>
       )}
-      {!isLoading && filteredContacts.length <= 0 && (
-        <Info>There are no contacts</Info>
-      )}
+      {!isLoading && !filteredContacts.length && <Empty />}
     </>
   );
 };

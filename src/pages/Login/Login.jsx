@@ -1,51 +1,79 @@
+import { Link } from 'react-router-dom';
 import { useAuth } from 'hooks/useAuth';
-import { toast } from 'react-toastify';
+
+import { Button, Form, Input, message } from 'antd';
+import Title from 'antd/es/typography/Title';
+import { LockOutlined, LoginOutlined, MailOutlined } from '@ant-design/icons';
+import css from './Login.module.css';
 
 const Login = () => {
-  const { logIn } = useAuth();
+  const { logIn, isAuthLoading } = useAuth();
+  const [antForm] = Form.useForm();
 
-  const handleSubmit = async event => {
-    event.preventDefault();
-    const form = event.currentTarget;
-    const formData = {
-      email: form.elements.email.value,
-      password: form.elements.password.value,
-    };
+  const onFinish = async formData => {
     try {
       await logIn(formData);
-      form.reset();
-      toast(`Login was succesfull`);
+      antForm.resetFields();
+      message.success(`Login was succesfull`);
     } catch (error) {
-      toast.error(`Unable to login, wrong user params or server error`);
+      message.error(`Unable to login, wrong user params or server error`);
     }
   };
 
   return (
-    <>
-      <form onSubmit={handleSubmit} autoComplete="off">
-        User email:
-        <label>
-          <input
-            type="email"
+    <section className={css.section}>
+      <div className="container">
+        <Title className={css.title}>User login</Title>
+        <Form
+          form={antForm}
+          name="Login"
+          autoComplete="off"
+          onFinish={onFinish}
+          layout="vertical"
+          className={css.form}
+        >
+          <Form.Item
+            label="Email"
             name="email"
-            placeholder="user@mail.com"
-            required
-          />
-        </label>
-        <label>
-          User password:
-          <input
-            type="password"
+            rules={[
+              { required: true, message: 'Please input your email!' },
+              {
+                type: 'email',
+                message: 'The input is not valid E-mail! user@mail.com',
+              },
+            ]}
+          >
+            <Input
+              prefix={<MailOutlined />}
+              type="email"
+              placeholder="user@mail.com"
+            />
+          </Form.Item>
+          <Form.Item
+            label="Password"
             name="password"
-            minLength={7}
-            placeholder="*******"
-            autoComplete="off"
-            required
-          />
-        </label>
-        <button type="submit">Login</button>
-      </form>
-    </>
+            rules={[
+              { required: true, message: 'Please input your password!' },
+              { min: 4, message: 'Min lenght=4' },
+            ]}
+          >
+            <Input.Password prefix={<LockOutlined />} placeholder="*******" />
+          </Form.Item>
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              block
+              icon={<LoginOutlined />}
+              loading={isAuthLoading}
+            >
+              Login
+            </Button>
+            Or <Link to="/register">register now!</Link>
+          </Form.Item>
+        </Form>
+      </div>
+    </section>
   );
 };
 

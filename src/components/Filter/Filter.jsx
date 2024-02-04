@@ -1,8 +1,11 @@
 import { useFilter } from 'hooks/useFilter';
-import { Input, Label } from './Filter.styled';
+
+import { SearchOutlined } from '@ant-design/icons';
+import { Form, Input } from 'antd';
+import css from './Filter.module.css';
 
 export const Filter = () => {
-  const { filterValue, setFilter } = useFilter();
+  const { setFilter } = useFilter();
 
   const handleChange = event => {
     const value = event.target.value.trimStart();
@@ -10,9 +13,15 @@ export const Filter = () => {
   };
 
   return (
-    <Label>
-      Filter contacts by name
-      <Input type="text" value={filterValue} onChange={handleChange} />
-    </Label>
+    <Form
+      name="Filter"
+      autoComplete="off"
+      layout="vertical"
+      className={css.form}
+    >
+      <Form.Item label="Search" name="filter">
+        <Input prefix={<SearchOutlined />} onChange={handleChange} />
+      </Form.Item>
+    </Form>
   );
 };
