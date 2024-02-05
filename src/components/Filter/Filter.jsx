@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useFilter } from 'hooks/useFilter';
 
 import { SearchOutlined } from '@ant-design/icons';
@@ -5,7 +6,14 @@ import { Form, Input } from 'antd';
 import css from './Filter.module.css';
 
 export const Filter = () => {
-  const { setFilter } = useFilter();
+  const { filterValue, setFilter } = useFilter();
+  const [form] = Form.useForm();
+
+  useEffect(() => {
+    form.setFieldsValue({
+      filter: filterValue,
+    });
+  }, [filterValue, form]);
 
   const handleChange = event => {
     const value = event.target.value.trimStart();
@@ -14,6 +22,7 @@ export const Filter = () => {
 
   return (
     <Form
+      form={form}
       name="Filter"
       autoComplete="off"
       layout="vertical"

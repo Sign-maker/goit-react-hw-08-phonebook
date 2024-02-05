@@ -62,7 +62,7 @@ export const ContactForm = () => {
           { min: 3, message: 'Min lenght=3' },
         ]}
       >
-        <Input prefix={<UserOutlined />} placeholder="user@mail.com" />
+        <Input prefix={<UserOutlined />} placeholder="Vasyl Smith" />
       </Form.Item>
       <Form.Item
         label="Number"
