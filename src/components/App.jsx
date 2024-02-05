@@ -14,7 +14,7 @@ const Register = lazy(() => import('pages/Register/Register'));
 const Login = lazy(() => import('pages/Login/Login'));
 
 export const App = () => {
-  const { refreshUser, isRefreshing, user } = useAuth();
+  const { refreshUser, isRefreshing } = useAuth();
 
   useEffect(() => {
     refreshUser()
