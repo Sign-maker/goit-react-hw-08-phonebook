@@ -14,12 +14,16 @@ const Register = lazy(() => import('pages/Register/Register'));
 const Login = lazy(() => import('pages/Login/Login'));
 
 export const App = () => {
-  const { refreshUser, isRefreshing } = useAuth();
+  const { refreshUser, isRefreshing, user } = useAuth();
 
   useEffect(() => {
-    refreshUser().catch(() => {
-      message.error(`Please login or register`);
-    });
+    refreshUser()
+      .then(({ name }) => {
+        message.success(`Welcome again, ${name}`);
+      })
+      .catch(() => {
+        message.error(`Please login or register`);
+      });
   }, [refreshUser]);
 
   return isRefreshing ? (
