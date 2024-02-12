@@ -4,7 +4,6 @@ import { lazy, useEffect } from 'react';
 import { useAuth } from 'hooks/useAuth';
 import { RestrictedRoute } from './RestricredRoute';
 import { PrivateRoute } from './PrivateRoute';
-import { message } from 'antd';
 import { Layout } from './Layout/Layout';
 import { routes } from 'constants/routes';
 
