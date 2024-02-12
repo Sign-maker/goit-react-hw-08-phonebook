@@ -17,13 +17,7 @@ export const App = () => {
   const { refreshUser, isRefreshing } = useAuth();
 
   useEffect(() => {
-    refreshUser()
-      .then(({ name }) => {
-        message.success(`Welcome again, ${name}`);
-      })
-      .catch(() => {
-        message.error(`Please login or register`);
-      });
+    refreshUser();
   }, [refreshUser]);
 
   return isRefreshing ? (
