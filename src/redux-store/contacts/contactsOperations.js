@@ -1,8 +1,11 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios1 from 'axios';
 
+// export const axios = axios1.create({
+//   baseURL: 'https://connections-api.herokuapp.com',
+// });
 export const axios = axios1.create({
-  baseURL: 'https://connections-api.herokuapp.com',
+  baseURL: 'http://localhost:8000',
 });
 
 export const fetchContacts = createAsyncThunk(
